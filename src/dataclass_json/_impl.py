@@ -11,6 +11,9 @@ class NonJsonableValueError(Exception):
     pass
 
 
+UNDEFINED = object()  # Field with this value will be omitted from jsonable output
+
+
 # noinspection PyProtectedMember
 class TypeInspector:
     def __init__(self, t):

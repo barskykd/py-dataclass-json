@@ -1,12 +1,11 @@
 import datetime
-import json
 import unittest
 from dataclasses import dataclass
 from enum import Enum
-from pprint import pprint
 from typing import Dict, NamedTuple, List, Union
 
 import dataclass_json
+from dataclass_json import UNDEFINED
 
 
 class WindDirection(Enum):
@@ -136,3 +135,13 @@ class DataClassJsonTests(unittest.TestCase):
     def test_union(self):
         dataclass_json.from_list(Union[Extra1, Precipitation], [{'end': None, 'start': None},
                                                                 {'int_field': 10, 'str_field': '20'}])
+
+    def test_missing(self):
+        @dataclass
+        class Foo:
+            field1: int = UNDEFINED
+            field2: str = UNDEFINED
+            field3: bool = UNDEFINED
+
+        dict = dataclass_json.to_dict(Foo(field3=False))
+        self.assertDictEqual(dict, {"field3": False})

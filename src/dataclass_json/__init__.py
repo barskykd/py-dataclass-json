@@ -3,7 +3,7 @@ import enum
 from dataclasses import is_dataclass, fields
 from typing import Dict, List, Type, TypeVar
 
-from ._impl import TypeInspector, NonJsonableValueError
+from ._impl import TypeInspector, NonJsonableValueError, UNDEFINED
 
 T = TypeVar('T')
 
@@ -28,13 +28,21 @@ def __data_class_to_dict(x):
     assert is_dataclass(x)
     result = {}
     for f in fields(x):
-        result[f.name] = __val_to_json_val(getattr(x, f.name))
+        v = getattr(x, f.name)
+        if v is not UNDEFINED:
+            result[f.name] = __val_to_json_val(v)
+
     return result
 
 
+# noinspection PyProtectedMember
 def __named_tuple_to_dict(x):
-    # noinspection PyProtectedMember
-    return {k: __val_to_json_val(getattr(x, k)) for k in x._fields}
+    result = {}
+    for k in x._fields:
+        v = getattr(x, k)
+        if v is not UNDEFINED:
+            result[k] = __val_to_json_val(v)
+    return result
 
 
 def __val_to_json_val(v):
