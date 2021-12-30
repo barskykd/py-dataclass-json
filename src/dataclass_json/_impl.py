@@ -11,7 +11,12 @@ class NonJsonableValueError(Exception):
     pass
 
 
-UNDEFINED = object()  # Field with this value will be omitted from jsonable output
+class UndefinedType:
+    def __bool__(self):
+        return False
+
+
+UNDEFINED = UndefinedType()  # Field with this value will be omitted from jsonable output
 
 
 # noinspection PyProtectedMember
