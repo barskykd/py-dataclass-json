@@ -28,19 +28,19 @@ class TypeInspector:
         self.is_named_tuple = is_namedtuple(t)
 
     @property
-    @lru_cache
+    @lru_cache()
     def list_t(self):
         assert self.is_list
         return TypeInspector(self.__args()[0])
 
     @property
-    @lru_cache
+    @lru_cache()
     def dict_key_t(self):
         assert self.is_dict
         return TypeInspector(self.__args()[0])
 
     @property
-    @lru_cache
+    @lru_cache()
     def dict_val_t(self):
         assert self.is_dict
         return TypeInspector(self.__args()[1])
@@ -60,12 +60,12 @@ class TypeInspector:
             return self.__t(v)
         return v
 
-    @lru_cache
+    @lru_cache()
     def enum_values(self):
         assert self.is_enum
         return [x.value for x in self.__t]
 
-    @lru_cache
+    @lru_cache()
     def __ann(self) -> Dict[str, 'TypeInspector']:
         assert self.is_named_tuple or self.is_dataclass
         return {k: TypeInspector(v) for k, v in self.__t.__annotations__.items()}
